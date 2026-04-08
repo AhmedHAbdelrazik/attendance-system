@@ -1,3 +1,4 @@
+#Ahmed Hossam
 import streamlit as st
 import os
 import cv2
@@ -13,8 +14,7 @@ st.set_page_config(page_title="Smart Attendance System", layout="wide")
 st.title("🎓 Smart AI Attendance System")
 tab1, tab2, tab3 = st.tabs(["📝 Registration", "🎥 Live Attendance", "📊 Reports"])
 
-# ==========================================
-# ==========================================
+
 with tab1:
     st.subheader("Student Registration Portal")
     st.write("Register a new student (Once per student).")
