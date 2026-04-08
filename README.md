@@ -1,6 +1,6 @@
 
-https://github.com/user-attachments/assets/cb86bc87-dda4-4bc0-8bf0-e7534c9ba4ef
 <div align="center">
+   🎬 Watch the System in Action
   <video src="https://github.com/user-attachments/assets/ee362a30-050c-4652-b910-d3efa30092f8" autoplay loop muted width="800"></video>
 </div>
 
