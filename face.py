@@ -12,6 +12,26 @@ def photo_to_encode(pic_path):
     else:
         print("no face recognation")
 
+
+def check_if_registered(new_encoding):
+    students_data = get_all_students() 
+
+    if not students_data:
+        print("no students registered before")
+        return False, None
+    else:
+        known_names = [row[1] for row in students_data]
+        known_encodings = [row[2] for row in students_data]
+
+        matches = face_recognition.compare_faces(known_encodings, new_encoding, tolerance=0.6)
+
+    if True in matches:
+        first_match_index = matches.index(True)
+        matched_name = known_names[first_match_index]
+        return True, matched_name
+    return False, None
+
+
 """
 def frame_to_encode(frame):
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

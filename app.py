@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import pandas as pd
 from database import add_student, mark_attendance, get_attendance_report, clear_attendance_records
-from face import photo_to_encode, identify_student
+from face import photo_to_encode, identify_student,check_if_registered
 from liveness import check_liveness
 import face_recognition
 
@@ -20,24 +20,40 @@ with tab1:
     st.write("Register a new student (Once per student).")
 
     student_name = st.text_input("Enter Student Full Name:")
-    uploaded_file = st.file_uploader("Upload a clear face photo", type=['jpg', 'png', 'jpeg'])
+    
+    photo_method = st.radio("Choose Photo Method:", ("Upload Photo", "Take Live Photo"))
+    
+    image_data = None 
+
+    if photo_method == "Upload Photo":
+        image_data = st.file_uploader("Upload a clear face photo", type=['jpg', 'png', 'jpeg'])
+    else:
+        image_data = st.camera_input("Take a live photo")
 
     if st.button("Register Student"):
-        if student_name and uploaded_file:
+        if student_name and image_data:
             with open("temp_image.jpg", "wb") as f:
-                f.write(uploaded_file.getbuffer())
+                f.write(image_data.getbuffer())
             
             st.info("Extracting Face Vector...")
             encoding = photo_to_encode("temp_image.jpg")
             
             if encoding is not None:
-                student_id = add_student(student_name, encoding)
-                st.success(f"✅ Success! {student_name} has been registered with ID: {student_id}")
+                is_registered, existing_name = check_if_registered(encoding)
                 
-                if os.path.exists("temp_image.jpg"):
-                    os.remove("temp_image.jpg")
+                if not is_registered: 
+                    student_id = add_student(student_name, encoding)
+                    st.success(f"✅ Success! {student_name} has been registered with ID: {student_id}")
+                else:
+                    st.warning(f"⚠️ Student Already exist with name: {existing_name}!")
+                    
             else:
                 st.error("❌ No face detected. Please use a clearer photo.")
+            
+            import os  
+            if os.path.exists("temp_image.jpg"):
+                os.remove("temp_image.jpg")
+                
         else:
             st.warning("⚠️ Please provide both a Name and a Photo.")
 
